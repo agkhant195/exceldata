@@ -44,7 +44,7 @@
             <option value="12">Dec</option>
         </select>
 
-        {!! Form::submit('Calculate', ['class'=>'btn btn-primary pull-right']) !!}
+        {!! Form::submit('Calculate', ['class'=>'btn btn-primary pull-right salary-calculate']) !!}
 
         {!! Form::close() !!}
 
@@ -54,13 +54,16 @@
 
 @section('content')
     <div class="page-content browse container-fluid" style="display: block; margin-top: 50px;">
-        @if(!empty($calculatedData[2]))
-            <p>Employee Name: {{ $calculatedData[0] }}</p>
-            <p>Salary: {{ $calculatedData[1] }}</p>
+        @if(!empty($calculatedData[0]))
+            <p>Employee Name: {{ $calculatedData[1] }}</p>
+            <p>Salary: {{ $calculatedData[2] }}</p>
             <p>Absent Days: {{ $calculatedData[3] }}</p>
             <p>Daily Amount: {{ round($calculatedData[4]) }}</p>
-            <p>Reduce Amount: {{ $calculatedData[5] }}</p>
-            <p>Net Salary: {{ $calculatedData[6] }}</p>
+            <p>Late Days: {{ $calculatedData[5] }}</p>
+            <p>Under30Mins: {{ $calculatedData[6] }} | Over30Mins: {{ $calculatedData[7] }}</p>
+            <p>Late Amount: {{ $calculatedData[8] }}</p>
+            <p>Reduce Amount: {{ $calculatedData[9] }}</p>
+            <p>Net Salary: {{ $calculatedData[10] }}</p>
         @else
             <p>Results Not Found!</p>
         @endif
