@@ -4,14 +4,42 @@ namespace App\Exports;
 
 use App\User;
 use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\WithHeadings;
 
-class UsersExport implements FromCollection
+class UsersExport implements FromCollection, WithHeadings
 {
     /**
     * @return \Illuminate\Support\Collection
     */
     public function collection()
     {
-        return User::all();
+        return User::get([
+            'id',
+            'name',
+            'email',
+            'department_id',
+            'salary',
+            'debt',
+            'position',
+            'birthday',
+            'hiredate',
+            'shiftcode'
+        ]);
+    }
+
+    public function headings(): array
+    {
+        return [
+            'Worker ID',
+            'Name',
+            'Email',
+            'Department ID',
+            'Salary',
+            'Debt',
+            'Position',
+            'Birthday',
+            'Hiredate',
+            'Shiftcode'
+        ];
     }
 }

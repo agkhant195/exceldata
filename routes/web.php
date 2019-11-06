@@ -27,6 +27,11 @@ Route::group(['prefix' => 'admin/notices'], function () {
     Route::post('/import', 'NoticesImportExport@import')->name('notices.import');
 });
 
+Route::group(['prefix' => 'admin/salary'], function () {
+    Route::get('/', 'SalaryCalculate@index')->name('salary.index');
+    Route::post('/calculate', 'SalaryCalculate@calculate')->name('salary.calculate');
+});
+
 Route::group(['prefix' => 'admin'], function () {
     Voyager::routes();
 });
