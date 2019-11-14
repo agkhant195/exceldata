@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Exports\NoticesExport;
+use App\Exports\NoticesFilterExport;
 use App\Imports\NoticesImport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests\UploadFile;
+use App\User;
 
 class NoticesImportExport extends Controller
 {
@@ -22,7 +24,7 @@ class NoticesImportExport extends Controller
 
     /* Notice Import */
     public function import(UploadFile $request) {
-        Excel::import(new NoticesImport,request()->file('file'));           
-        return redirect('admin/notices');
+        Excel::import(new NoticesImport,request()->file('file'));
+        return redirect('admin/notices')->with('importSuccess', 'Notices imported successfully.');
     }
 }

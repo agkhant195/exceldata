@@ -23,6 +23,6 @@ class UsersImportExport extends Controller
     /* User Import */
     public function import(UploadFile $request) {
         Excel::import(new UsersImport,request()->file('file'));           
-        return redirect('admin/users');
+        return redirect('admin/users')->with('importSuccess', 'Users imported successfully.');
     }
 }

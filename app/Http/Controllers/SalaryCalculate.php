@@ -10,12 +10,12 @@ use DateTime;
 class SalaryCalculate extends Controller
 {
     public function index() {
-        $employees = User::where('role_id', 2)->get();
+        $employees = User::where('role_id', 3)->get();
         return view('vendor/voyager/salary/browse', compact('employees'));
     }
 
     public function calculate(Request $request) {
-        $employees = User::where('role_id', 2)->get();
+        $employees = User::where('role_id', 3)->get();
 
         $sEmployee = $request->employee;
         $sDate1    = new DateTime($request->year.'-'.$request->month);
@@ -23,14 +23,21 @@ class SalaryCalculate extends Controller
         $sFDate    = $sDate1->modify("first day of");
         $sLDate    = $sDate2->modify("last day of");
 
+        $sData     = [$sEmployee, $request->year, $request->month];
+
         $employee  = User::findOrFail($sEmployee);
         $emName    = $employee->name;
         $salary    = $employee->salary;
-        if($salary >= 300000) {
-            $SSD   = 6000;
-        } else {
-            $SSD   = (($salary/100)*2);
+        $SSB       = 0;
+
+        if($employee->SSB == 1) {
+            if($salary >= 300000) {
+                $SSB   = 6000;
+            } else {
+                $SSB   = (($salary/100)*2);
+            }
         }
+
         $dailyAmt  = ($salary/26);
         $hourlyAmt = ($dailyAmt/8);
         $minuteAmt = ($hourlyAmt/60);
@@ -38,7 +45,7 @@ class SalaryCalculate extends Controller
         $monthDays = Notice::where('user_id', $sEmployee)->whereBetween('CalculateDate',[$sFDate, $sLDate])->get();
         $workingDays = $monthDays->where('Absent', 0);
         $absentDays  = $monthDays->where('Absent', 1);
-        $reduceAmt   = round($dailyAmt*count($absentDays));
+        $reduceAmt   = round(($dailyAmt*count($absentDays)) + $SSB);
         $lateDays    = $workingDays->where('Late', '>', 0);
         $lDaysUn30   = $lateDays->where('Late', '<', 30);
         $lDaysOv30   = $lateDays->where('Late', '>=', 30);
@@ -60,9 +67,9 @@ class SalaryCalculate extends Controller
 
         $netSalary   = ($salary-$reduceAmt);
 
-        $calculatedData = [count($workingDays), $emName, $salary, count($absentDays), $dailyAmt, count($lateDays), count($lDaysUn30), count($lDaysOv30), $lateAmt, $reduceAmt, $netSalary];
+        $calculatedData = [count($workingDays), $emName, $salary, count($absentDays), $dailyAmt, count($lateDays), count($lDaysUn30), count($lDaysOv30), $lateAmt, $SSB, round($reduceAmt), round($netSalary, -2), $sData];
 
-        return view('vendor/voyager/salary/browse', compact('employees', 'calculatedData'));
+        return view('vendor/voyager/salary/browse', compact('employees', 'calculatedData', 'sData'));
 
     }
 }

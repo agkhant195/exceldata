@@ -53,6 +53,11 @@
             <div class="col-md-12">
                 <div class="panel panel-bordered">
                     <div class="panel-body">
+                        @if (session('importSuccess'))
+                            <div class="alert alert-success" role="alert">
+                                {{ session('importSuccess') }}
+                            </div><br>
+                        @endif
                         @if ($isServerSide)
                             <form method="get" class="form-search">
                                 <div id="search-input">
