@@ -18,9 +18,9 @@ class UsersExport implements FromCollection, WithHeadings
             'name',
             'email',
             'department_id',
+            'position',
             'salary',
             'debt',
-            'position',
             'birthday',
             'hiredate',
             'shiftcode'
@@ -34,9 +34,9 @@ class UsersExport implements FromCollection, WithHeadings
             'Name',
             'Email',
             'Department ID',
+            'Position',
             'Salary',
             'Debt',
-            'Position',
             'Birthday',
             'Hiredate',
             'Shiftcode'
