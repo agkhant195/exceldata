@@ -43,9 +43,12 @@ class SalaryCalculate extends Controller
         $minuteAmt = ($hourlyAmt/60);
 
         $monthDays = Notice::where('user_id', $sEmployee)->whereBetween('CalculateDate',[$sFDate, $sLDate])->get();
-        $workingDays = $monthDays->where('Absent', 0);
+        $workingDays = $monthDays->where('WorkingHours', '!=', null);
         $absentDays  = $monthDays->where('Absent', 1);
-        $reduceAmt   = round(($dailyAmt*count($absentDays)) + $SSB);
+        $leaveDays   = $monthDays->where('Leave', 1);
+        $reduceAmt   = round(($dailyAmt*( count($absentDays)-count($leaveDays)) ) + $SSB);
+        $dutyOut     = $workingDays->first()->DutyOut;
+        $earlyDays   = $workingDays->where('OutTime', '<', $dutyOut);
         $lateDays    = $workingDays->where('Late', '>', 0);
         $lDaysUn30   = $lateDays->where('Late', '<', 30);
         $lDaysOv30   = $lateDays->where('Late', '>=', 30);
@@ -65,9 +68,40 @@ class SalaryCalculate extends Controller
             $reduceAmt += ($minuteAmt * $ttLMOv30);
         }
 
+        if(!empty($earlyDays)) {
+            $earlyMinutes = 0;
+            foreach($earlyDays as $earlyDay) {
+                $dTOMi = intval(substr($earlyDay->DutyOut, 3, 2));
+                $tmOMi = intval(substr($earlyDay->OutTime, 3, 2));
+                $earlyHour = (intval($earlyDay->DutyOut) - intval($earlyDay->OutTime)) - 1;
+                if($earlyHour > 0) {
+                    $earlyMinutes += $earlyHour * 60;
+                }
+                if($dTOMi == 0) {
+                    $earlyMinute = ( 60 - $tmOMi );
+                    if($earlyMinute > 0) {
+                        $earlyMinutes += $earlyMinute;
+                    }
+                } else {
+                    if($dTOMi >= $tmOMi) {
+                        $earlyMinute = $dTOMi - $tmOMi;
+                        if($earlyMinute > 0) {
+                            $earlyMinutes += $earlyMinute;
+                        }
+                    } else {
+                        $earlyMinute = ($dTOMi + 60) - $tmOMi;
+                        if($earlyMinute > 0) {
+                            $earlyMinutes += $earlyMinute;
+                        }
+                    }
+                }
+            }
+            $reduceAmt += ($minuteAmt * $earlyMinutes);
+        }
+
         $netSalary   = ($salary-$reduceAmt);
 
-        $calculatedData = [count($workingDays), $emName, $salary, count($absentDays), $dailyAmt, count($lateDays), count($lDaysUn30), count($lDaysOv30), $lateAmt, $SSB, round($reduceAmt), round($netSalary, -2), $sData];
+        $calculatedData = [count($workingDays), $emName, $salary, count($absentDays), count($leaveDays), $dailyAmt, count($lateDays), count($lDaysUn30), count($lDaysOv30), $lateAmt, $SSB, round($reduceAmt), round($netSalary, -2), $sData, count($earlyDays)];
 
         return view('vendor/voyager/salary/browse', compact('employees', 'calculatedData', 'sData'));
 

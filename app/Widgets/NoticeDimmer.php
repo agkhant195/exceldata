@@ -25,17 +25,16 @@ class NoticeDimmer extends BaseDimmer
     {
         $count = Notice::count();
         $string = 'Notices';
-
-        return view('voyager::dimmer', array_merge($this->config, [
-            'icon'   => 'voyager-folder',
-            'title'  => "{$count} {$string}",
-            'text'   => 'You have '."{$count}".' notices in your database. Click on button below to view all notices.',
-            'button' => [
-                'text' => 'View all notices',
-                'link' => route('voyager.notices.index'),
-            ],
-            'image' => 'storage/widgets/notices.jpg',
-        ]));
+            return view('voyager::dimmer', array_merge($this->config, [
+                'icon'   => 'voyager-folder',
+                'title'  => "{$count} {$string}",
+                'text'   => 'You have '."{$count}".' notices in your database. Click on button below to view all notices.',
+                'button' => [
+                    'text' => 'View all notices',
+                    'link' => route('voyager.notices.index'),
+                ],
+                'image' => 'storage/widgets/notices.jpg',
+            ]));
     }
 
     /**

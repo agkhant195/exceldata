@@ -25,6 +25,6 @@ class NoticesImportExport extends Controller
     /* Notice Import */
     public function import(UploadFile $request) {
         Excel::import(new NoticesImport,request()->file('file'));
-        return redirect('admin/notices')->with('importSuccess', 'Notices imported successfully.');
+        return redirect('admin/notices');
     }
 }

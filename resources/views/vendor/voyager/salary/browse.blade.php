@@ -42,15 +42,15 @@
         <select name="month" style="height: 28px; margin-right: 5px;" required>
             <option value="">Month</option>
             @if(!empty($sData))
-                <option value="1" {{ $sData[2] ==  1 ? 'selected' : '' }}>Jan</option>
-                <option value="2" {{ $sData[2] ==  2 ? 'selected' : '' }}>Feb</option>
-                <option value="3" {{ $sData[2] ==  3 ? 'selected' : '' }}>Mar</option>
-                <option value="4" {{ $sData[2] ==  4 ? 'selected' : '' }}>Apr</option>
-                <option value="5" {{ $sData[2] ==  5 ? 'selected' : '' }}>May</option>
-                <option value="6" {{ $sData[2] ==  6 ? 'selected' : '' }}>Jun</option>
-                <option value="7" {{ $sData[2] ==  7 ? 'selected' : '' }}>Jul</option>
-                <option value="8" {{ $sData[2] ==  8 ? 'selected' : '' }}>Aug</option>
-                <option value="9" {{ $sData[2] ==  9 ? 'selected' : '' }}>Sep</option>
+                <option value="1"  {{ $sData[2] ==  1  ? 'selected' : '' }}>Jan</option>
+                <option value="2"  {{ $sData[2] ==  2  ? 'selected' : '' }}>Feb</option>
+                <option value="3"  {{ $sData[2] ==  3  ? 'selected' : '' }}>Mar</option>
+                <option value="4"  {{ $sData[2] ==  4  ? 'selected' : '' }}>Apr</option>
+                <option value="5"  {{ $sData[2] ==  5  ? 'selected' : '' }}>May</option>
+                <option value="6"  {{ $sData[2] ==  6  ? 'selected' : '' }}>Jun</option>
+                <option value="7"  {{ $sData[2] ==  7  ? 'selected' : '' }}>Jul</option>
+                <option value="8"  {{ $sData[2] ==  8  ? 'selected' : '' }}>Aug</option>
+                <option value="9"  {{ $sData[2] ==  9  ? 'selected' : '' }}>Sep</option>
                 <option value="10" {{ $sData[2] ==  10 ? 'selected' : '' }}>Oct</option>
                 <option value="11" {{ $sData[2] ==  11 ? 'selected' : '' }}>Nov</option>
                 <option value="12" {{ $sData[2] ==  12 ? 'selected' : '' }}>Dec</option>
@@ -81,16 +81,19 @@
 @section('content')
     <div class="page-content browse container-fluid" style="display: block; margin-top: 50px;">
         @if(!empty($calculatedData[0]))
+            <p>Working Days: {{ $calculatedData[0] }}</p>
             <p>Employee Name: {{ $calculatedData[1] }}</p>
             <p>Salary: {{ $calculatedData[2] }}</p>
             <p>Absent Days: {{ $calculatedData[3] }}</p>
-            <p>Daily Amount: {{ round($calculatedData[4]) }}</p>
-            <p>Late Days: {{ $calculatedData[5] }}</p>
-            <p>Under30Mins: {{ $calculatedData[6] }} | Over30Mins: {{ $calculatedData[7] }}</p>
-            <p>Late Amount: {{ $calculatedData[8] }}</p>
-            <p>SSB: {{ $calculatedData[9] }}</p>
-            <p>Total Reduce Amount: {{ $calculatedData[10] }}</p>
-            <p>Net Salary: {{ $calculatedData[11] }}</p>
+            <p>Leave Days: {{ $calculatedData[4] }}</p>
+            <p>Daily Amount: {{ round($calculatedData[5]) }}</p>
+            <p>Late Days: {{ $calculatedData[6] }}</p>
+            <p>Under30Mins: {{ $calculatedData[7] }} | Over30Mins: {{ $calculatedData[7] }}</p>
+            <p>Late Amount: {{ $calculatedData[9] }}</p>
+            <p>SSB: {{ $calculatedData[10] }}</p>
+            <p>Total Reduce Amount: {{ $calculatedData[11] }}</p>
+            <p>Net Salary: {{ $calculatedData[12] }}</p>
+            <p>Early Days: {{ $calculatedData[14] }}</p>
         @else
             <p>Results Not Found!</p>
         @endif

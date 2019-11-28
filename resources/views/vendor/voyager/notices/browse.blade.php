@@ -53,10 +53,19 @@
             <div class="col-md-12">
                 <div class="panel panel-bordered">
                     <div class="panel-body">
-                        @if (session('importSuccess'))
-                            <div class="alert alert-success" role="alert">
-                                {{ session('importSuccess') }}
+                        {{-- @if (session('test'))
+                            <div class="alert alert-warning" role="alert">
+                                @foreach($unfound_id as $id)
+
+                                @endforeach
                             </div><br>
+                        @endif --}}
+                        @if(Cache::has('unfound_id'))
+                            <?php
+                                $unfound_id = Cache::get('unfound_id');
+                                print_r($unfound_id);
+                                Cache::forget('unfound_id');
+                            ?>
                         @endif
                         @if ($isServerSide)
                             <form method="get" class="form-search">
