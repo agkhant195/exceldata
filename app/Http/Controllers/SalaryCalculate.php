@@ -45,7 +45,7 @@ class SalaryCalculate extends Controller
         $monthDays = Notice::where('user_id', $sEmployee)->whereBetween('CalculateDate',[$sFDate, $sLDate])->get();
         $workingDays = $monthDays->where('WorkingHours', '!=', null);
         $absentDays  = $monthDays->where('Absent', 1);
-        $leaveDays   = $monthDays->where('Leave', 1);
+        $leaveDays   = $absentDays->where('Leave', 1);
         $reduceAmt   = round(($dailyAmt*( count($absentDays)-count($leaveDays)) ) + $SSB);
         $dutyOut     = $workingDays->first()->DutyOut;
         $earlyDays   = $workingDays->where('OutTime', '<', $dutyOut);
@@ -62,8 +62,19 @@ class SalaryCalculate extends Controller
 
         if(!empty($lDaysOv30)) {
             foreach($lDaysOv30 as $lDayOv30) {
-                $minuteOv30 = ($lDayOv30->Late-29);
-                $ttLMOv30 += $minuteOv30;
+                if($lDayOv30->Late < 180) {
+                    $minuteOv30 = ($lDayOv30->Late-30);
+                    $ttLMOv30 += $minuteOv30;
+                } else {
+                    $laMn = $lDayOv30->Late - 179;
+                    if($laMn > 60) {
+                        $minuteOv30 = ($lDayOv30->Late-90);
+                        $ttLMOv30 += $minuteOv30;
+                    } else {
+                        $minuteOv30 = ($lDayOv30->Late-(30+$laMn));
+                        $ttLMOv30 += $minuteOv30;
+                    }
+                }
             }
             $reduceAmt += ($minuteAmt * $ttLMOv30);
         }
@@ -72,29 +83,52 @@ class SalaryCalculate extends Controller
             $earlyMinutes = 0;
             foreach($earlyDays as $earlyDay) {
                 $dTOMi = intval(substr($earlyDay->DutyOut, 3, 2));
-                $tmOMi = intval(substr($earlyDay->OutTime, 3, 2));
+                $tMOMi = intval(substr($earlyDay->OutTime, 3, 2));
                 $earlyHour = (intval($earlyDay->DutyOut) - intval($earlyDay->OutTime)) - 1;
-                if($earlyHour > 0) {
+                if($earlyHour < 5) {
                     $earlyMinutes += $earlyHour * 60;
-                }
-                if($dTOMi == 0) {
-                    $earlyMinute = ( 60 - $tmOMi );
-                    if($earlyMinute > 0) {
-                        $earlyMinutes += $earlyMinute;
-                    }
-                } else {
-                    if($dTOMi >= $tmOMi) {
-                        $earlyMinute = $dTOMi - $tmOMi;
+                    if($dTOMi == 0) {
+                        $earlyMinute = ( 60 - $tMOMi );
                         if($earlyMinute > 0) {
                             $earlyMinutes += $earlyMinute;
                         }
                     } else {
-                        $earlyMinute = ($dTOMi + 60) - $tmOMi;
+                        if($dTOMi >= $tMOMi) {
+                            $earlyMinute = $dTOMi - $tMOMi;
+                            if($earlyMinute > 0) {
+                                $earlyMinutes += $earlyMinute;
+                            }
+                        } else {
+                            $earlyMinute = ($dTOMi + 60) - $tMOMi;
+                            if($earlyMinute > 0) {
+                                $earlyMinutes += $earlyMinute;
+                            }
+                        }
+                    }
+                } elseif($earlyHour == 5) {
+                    $earlyMinutes += 300;
+                } else {
+                    $earlyMinutes += $earlyHour * 60;
+                    if($dTOMi == 0) {
+                        $earlyMinute = ( 60 - $tMOMi );
                         if($earlyMinute > 0) {
                             $earlyMinutes += $earlyMinute;
                         }
+                    } else {
+                        if($dTOMi >= $tMOMi) {
+                            $earlyMinute = $dTOMi - $tMOMi;
+                            if($earlyMinute > 0) {
+                                $earlyMinutes += $earlyMinute;
+                            }
+                        } else {
+                            $earlyMinute = ($dTOMi + 60) - $tMOMi;
+                            if($earlyMinute > 0) {
+                                $earlyMinutes += $earlyMinute;
+                            }
+                        }
                     }
-                }
+                    $earlyMinutes -= 60;
+                }                
             }
             $reduceAmt += ($minuteAmt * $earlyMinutes);
         }

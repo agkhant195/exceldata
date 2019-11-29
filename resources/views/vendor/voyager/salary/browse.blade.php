@@ -88,7 +88,7 @@
             <p>Leave Days: {{ $calculatedData[4] }}</p>
             <p>Daily Amount: {{ round($calculatedData[5]) }}</p>
             <p>Late Days: {{ $calculatedData[6] }}</p>
-            <p>Under30Mins: {{ $calculatedData[7] }} | Over30Mins: {{ $calculatedData[7] }}</p>
+            <p>Under30Mins: {{ $calculatedData[7] }} | Over30Mins: {{ $calculatedData[8] }}</p>
             <p>Late Amount: {{ $calculatedData[9] }}</p>
             <p>SSB: {{ $calculatedData[10] }}</p>
             <p>Total Reduce Amount: {{ $calculatedData[11] }}</p>
